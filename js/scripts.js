@@ -59,12 +59,40 @@ function displayContactInfo(addressbook){
   contactsList.html(html);
 }
 
+function showContact(id){
+  var contact = addressBook.findContact(id);
+  $(".show-contact").show();
+  $(".first-name").html(contact.firstName);
+  $(".last-name").html(contact.lastName);
+  $(".phone-number").html(contact.phoneNumber);
+  var buttons = $("#buttons");
+  buttons.empty();
+  buttons.append("<button class='deleteButton' id=" + + contact.id + ">Delete Contact</button>" );
+}
+
+function addListeners(){
+  $("ul#contacts").on("click", "li", function(){
+    showContact(this.id);
+  })
+  $("#buttons").on("click", ".deleteButton", function(){
+    addressBook.deleteContact(this.id);
+    $("#show-contact").hide();
+    displayContactInfo(addressBook);
+  })
+}
+
 $(document).ready(function(){
+  addListeners();
   $("form#newContact").submit(function(event){
     event.preventDefault();
     var inputtedFirstName = $("input#firstName").val();
     var inputtedLastName = $("input#lastName").val();
     var inputtedPhoneNumber = $("input#phoneNumber").val();
+
+    $("input#firstName").val("");
+    $("input#lastName").val("");
+    $("input#phoneNumber").val("");
+
     var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
     addressBook.addContact(newContact);
     displayContactInfo(addressBook);
